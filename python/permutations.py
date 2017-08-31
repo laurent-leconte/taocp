@@ -9,6 +9,9 @@ def permutation_product(perms):
         perms: a list of cycles to multiply
     """
     # Start by flattening the input to a list of cycles if necessary
+    if len(perms) == 0:
+        #input is the identity permutation - return id
+        return []
     cycles = flatten_permutations(perms)
     # First pass (step A1). Tag left parens and replace right parens by tagged first element of cycle.
     # Tagging is done by negating the input. Left parens are actually not tracked, as they don't come into play.
@@ -69,5 +72,6 @@ if __name__ == '__main__':
     perms = [perm1, perm2]
     knuth = [(1, 3, 6, 7), (2, 3, 4), (1, 5, 4), (6, 1, 4, 5), (2, 7, 6, 1, 5)]
     print(permutation_product(knuth))
+    print(permutation_product([(1,)]))
     print(permutation_product(perm1 + inv_perm1))
 

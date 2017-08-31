@@ -1,0 +1,11 @@
+.project
+.pydevproject
+.idea
+.coverage
+*.pyc
+scratch*.py
+__pycache__/
+htmlcov/
+tmp/
+venv/
+
