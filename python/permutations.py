@@ -88,8 +88,38 @@ def permutation_product_B(perms):
         # Step B4
         T[j] = T[0]
     # end of main algorithm. Now translate the result in cycle form.
+    return table_to_cycles(T)
+
+def cycles_to_table(cycles):
+    """Takes a list of cycles and translates it into a permutation table.
+    The permutation is assumed to be from 1 to max(max(cycles)). If `(cycles) == 0` (that is, the input represents
+    the identity permutation), the result will be `[0, 1]`.
+
+    :param cycles: The list of cycles to translate.
+    :return: A permutation table such that table[i] holds the permutation of i (table[0] = 0).
+    """
+    if len(cycles) == 0:
+        return [0, 1]
+    n = max([max(cycle) for cycle in cycles])
+    result = list(range(n+1))
+    for cycle in cycles:
+        for i in range(len(cycle)):
+            left = cycle[i-1]
+            right = cycle[i]
+            result[left] = right
+    return result
+
+def table_to_cycles(perm_table):
+    """Takes a permutation table and translates it into a list of cycles.
+
+    :param perm_table: The permutation in table form.
+    The permutation is defined by i -> perm_table[i] for i in [1,n] (perm_table[0] is not used).
+    :return: The same permutation in cycle form.
+    """
     result = []
+    T = list(perm_table)
     T[0] = 0
+    n = len(T) - 1
     while True:
         # find first untagged element
         idx = 0
@@ -130,14 +160,42 @@ def flatten_permutations(perms):
     else:
         return perms
 
+def permutation_inverse_I(perm):
+    """Implements Algorithm I from 1.3.3.
+
+    :param perm: The permutation to invert. To be coherent with the other methods, the input should be a list of cycles.
+    :return: The inverse of the input, in cycle form.
+    """
+    X = cycles_to_table(perm)
+    #step I1
+    m = len(X) - 1
+    j = -1
+    #step I6: loop on m
+    while m > 0:
+        i = X[m]
+        if i < 0:
+            #step I5
+            X[m] = -i
+        else:
+            while i > 0:
+                #steps I3 and I4
+                X[m] = j
+                j = -m
+                m = i
+                i = X[m]
+            #steps I4 and I5
+            X[m] = -j
+        m -= 1
+    return table_to_cycles(X)
+
 if __name__ == '__main__':
-    perm1 = [(1, 2, 3),(4,6)]
-    inv_perm1 = [(4,6),(2,1,3)]
-    perm2 = [(3,5),(1,4)]
+    perm1 = [(1, 2, 3), (4, 6)]
+    inv_perm1 = [(4, 6), (2, 1, 3)]
+    perm2 = [(3, 5), (1, 4)]
     perms = [perm1, perm2]
     knuth = [(1, 3, 6, 7), (2, 3, 4), (1, 5, 4), (6, 1, 4, 5), (2, 7, 6, 1, 5)]
-    print(permutation_product_B(knuth))
-    print(permutation_product_A(knuth))
     print(permutation_product_B([(1,)]))
     print(permutation_product_B(perm1 + inv_perm1))
-
+    print(permutation_inverse_I(perm1))
+    print(permutation_inverse_I(perm2))
+    print(permutation_product_A(perm2 + perm2))
