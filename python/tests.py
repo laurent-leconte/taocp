@@ -1,6 +1,7 @@
 import unittest
 from permutations import table_to_cycles, cycles_to_table
 from permutations import permutation_product_A, permutation_product_B, permutation_inverse_I
+from linkedlists import topological_sort
 
 class PermutationTest(unittest.TestCase):
 
@@ -50,3 +51,17 @@ class PermutationTest(unittest.TestCase):
         self.assertEqual(permutation_inverse_I([]),[])
         self.assertEqual(permutation_inverse_I(self.perm1), self.inv_perm1)
         self.assertEqual(permutation_inverse_I(self.perm3), self.perm3)
+
+class LinkedlistsTest(unittest.TestCase):
+    def setUp(self):
+        self.simple = [(2, 3), (4, 5), (1, 2), (3, 4)]
+        self.knuth = [(9, 2), (3, 7), (7, 5), (5, 8), (8, 6), (4, 6), (1, 3), (7, 4), (9, 5), (2, 8)]
+        self.knuth_res = [9, 2, 1, 3, 7, 5, 8, 4, 6]
+        self.loop = [(1, 2), (2, 3), (3, 1), (1, 4)]
+
+    def test_topological_sort(self):
+        self.assertEqual(topological_sort(self.simple), [1, 2, 3, 4, 5])
+        self.assertEqual(topological_sort(self.knuth), self.knuth_res)
+
+    def test_topological_sort_loop(self):
+        self.assertRaises(ValueError, topological_sort, self.loop)
