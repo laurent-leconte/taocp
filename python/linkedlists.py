@@ -110,46 +110,61 @@ def polynomial_multiplication(p, m):
     :param m: second polynomial to multiply
     :return: p*m as a new list (note that this is different from the original algorithm)
     """
-    result = [(0, (0, 0, -1))]
+    special = (0, 0, -1)
+    result = []
     circular_p = itertools.cycle(p)
-
+    print("start ", p, m)
     def coef(X):
         return X[0]
 
     def abc(X):
         return X[1]
 
+    def add_abc(X, Y):
+        a = abc(X)
+        b = abc(Y)
+        return tuple([e1 + e2 for (e1, e2) in zip(a, b)])
+
     # loop for step M1/M2
     for M in m:
         if abc(M) == (0, 0, -1):
-            return result + [M]
+            return result + [(0, special)]
 
-        # loop over p and q while the special node hasn't been reached
+        # initialize P and Q.
         P = next(circular_p)
-        circular_q = itertools.cycle(result.copy())
+        # poor man's version of circular lists : take the previous iteration's result, use it as a new list and store
+        circular_q = iter(result.copy() + [(0, special)])
         Q = next(circular_q)
-
-        while True:
-            while abc(P) < abc(Q):
-                # step A2
-                result.append(Q)
-                Q = next(circular_q)
-            while abc(P) > abc(Q):
-                # step A5
-                result.append(P)
-                P = next(circular_p)
-            if abc(P) == abc(Q):
-                # step A3
-                if abc(P) == (0, 0, -1):
-                    # exit condition of step A3. Use Q as short-hand for the special node
-                    return result + [Q]
-                c = coef(P) + coef(Q)
+        result = []
+        # same algorithm as for addition with a few changes
+                while abc(P) != special or abc(Q) != special:
+            if add_abc(P, M) == abc(Q):
+                # step A3/M2. No need to check that abc(P) > -1 as this is always true in this branch
+                c = coef(P)*coef(M) + coef(Q)
                 if c != 0:
-                    result.append((c, abc(P)))
+                    print("appending from A3 ", (c, abc(Q)))
+                    result.append((c, abc(Q)))
                 P = next(circular_p)
                 Q = next(circular_q)
+            if abc(P) > special:
+                while add_abc(P, M) < abc(Q):
+                    # step A2. # The while condition is probably not enough to cover the M2 check
+                    print("appending from A2a ", Q)
+                    result.append(Q)
+                    Q = next(circular_q)
+            else:
+                while abc(Q) > special:
+                    print("appending from A2b ", Q)
+                    result.append(Q)
+                    Q = next(circular_q)
+            while abc(P) > special and add_abc(P, M) > abc(Q):
+                # step A5
+                X = (coef(P)*coef(M), add_abc(P, M))
+                print("appending from A5 ", X)
+                result.append(X)
+                P = next(circular_p)
 
-
+        #result.append((0, special))
 
 
 if __name__ == '__main__':

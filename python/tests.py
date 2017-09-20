@@ -1,7 +1,7 @@
 import unittest
 from permutations import table_to_cycles, cycles_to_table
 from permutations import permutation_product_A, permutation_product_B, permutation_inverse_I
-from linkedlists import topological_sort, polynomial_addition
+from linkedlists import topological_sort, polynomial_addition, polynomial_multiplication
 
 class PermutationTest(unittest.TestCase):
 
@@ -62,7 +62,10 @@ class LinkedlistsTest(unittest.TestCase):
         self.p = [(1, (1, 0, 0)), (1, (0, 1, 0)), (1, (0, 0, 1))] + self.zero
         self.minus_p = [(-1, (1, 0, 0)), (-1, (0, 1, 0)), (-1, (0, 0, 1))] + self.zero
         self.q = [(1, (2, 0, 0)), (-2, (0, 1, 0)), (-1, (0, 0, 1))] + self.zero
+        self.p2 = [(1, (2, 0, 0)), (2, (1, 1, 0)), (2, (1, 0, 1)), (1, (0, 2, 0)), (2, (0, 1, 1)), (1, (0, 0, 2))] + self.zero
         self.p_plus_q = [(1, (2, 0, 0)), (1, (1, 0, 0)), (-1, (0, 1, 0))] + self.zero
+        self.pq = [(1, (3, 0, 0)), (1, (2, 1, 0)), (1, (2, 0, 1)), (-2, (1, 1, 0)), (-1, (1, 0, 1)), (-2, (0, 2, 0))] +\
+                  [(-3, (0, 1, 1)), (-1, (0, 0, 2))] + self.zero
         self.one = [(1, (0, 0, 0))] + self.zero
 
     def test_topological_sort(self):
@@ -85,3 +88,18 @@ class LinkedlistsTest(unittest.TestCase):
     def test_polynomial_addition_commut(self):
         self.assertEqual(polynomial_addition(self.q, self.p), self.p_plus_q)
         self.assertEqual(polynomial_addition(self.minus_p, self.p), self.zero)
+
+    def test_polynomial_multiplication_zero(self):
+        self.assertEqual(polynomial_multiplication(self.zero, self.zero), self.zero)
+        self.assertEqual(polynomial_multiplication(self.p, self.zero), self.zero)
+        self.assertEqual(polynomial_multiplication(self.zero, self.p), self.zero)
+
+    def test_polynomial_multiplication_one(self):
+        self.assertEqual(polynomial_multiplication(self.one, self.one), self.one)
+        self.assertEqual(polynomial_multiplication(self.p, self.one), self.p)
+        self.assertEqual(polynomial_multiplication(self.one, self.p), self.p)
+
+    def test_polynomial_multiplication(self):
+        self.assertEqual(polynomial_multiplication(self.p, self.q), self.pq)
+        self.assertEqual(polynomial_multiplication(self.q, self.p), self.pq)
+        self.assertEqual(polynomial_multiplication(self.p, self.p), self.p2)
