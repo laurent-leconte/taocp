@@ -73,14 +73,22 @@ def polynomial_addition(p, q):
     # step A1. P and Q are used to denote the value of the current element of p and q
     P = next(circular_p)
     Q = next(circular_q)
+    special = (0, 0, -1)
 
     def coef(X):
         return X[0]
 
     def abc(X):
         return X[1]
-    # loop over p and q while the special node hasn't been reached
-    while True:
+    # loop over p and q while the special node hasn't been reached (exit case of step A3)
+    while abc(P) != special or abc(Q) != special :
+        if abc(P) == abc(Q):
+            # step A3
+            c = coef(P) + coef(Q)
+            if c != 0:
+                result.append((c, abc(P)))
+            P = next(circular_p)
+            Q = next(circular_q)
         while abc(P) < abc(Q):
             # step A2
             result.append(Q)
@@ -89,17 +97,57 @@ def polynomial_addition(p, q):
             # step A5
             result.append(P)
             P = next(circular_p)
-        if abc(P) == abc(Q):
-            # step A3
-            if abc(P) == (0, 0, -1):
-                # exit condition of step A3. Use Q as short-hand for the special node
-                return result + [Q]
-            c = coef(P) + coef(Q)
-            if c != 0:
-                result.append((c, abc(P)))
-            P = next(circular_p)
-            Q = next(circular_q)
 
+    return result + [Q]
+
+def polynomial_multiplication(p, m):
+    """Implement algorithm M of chapter 2.2.4.
+
+    As for addition, each polynomial is described as a list of nested tuples of the form (coef, (a, b, c)).
+    The last element of each polynomial is always (0, (0, 0, -1)).
+
+    :param p: first polynomial to multiply
+    :param m: second polynomial to multiply
+    :return: p*m as a new list (note that this is different from the original algorithm)
+    """
+    result = [(0, (0, 0, -1))]
+    circular_p = itertools.cycle(p)
+
+    def coef(X):
+        return X[0]
+
+    def abc(X):
+        return X[1]
+
+    # loop for step M1/M2
+    for M in m:
+        if abc(M) == (0, 0, -1):
+            return result + [M]
+
+        # loop over p and q while the special node hasn't been reached
+        P = next(circular_p)
+        circular_q = itertools.cycle(result.copy())
+        Q = next(circular_q)
+
+        while True:
+            while abc(P) < abc(Q):
+                # step A2
+                result.append(Q)
+                Q = next(circular_q)
+            while abc(P) > abc(Q):
+                # step A5
+                result.append(P)
+                P = next(circular_p)
+            if abc(P) == abc(Q):
+                # step A3
+                if abc(P) == (0, 0, -1):
+                    # exit condition of step A3. Use Q as short-hand for the special node
+                    return result + [Q]
+                c = coef(P) + coef(Q)
+                if c != 0:
+                    result.append((c, abc(P)))
+                P = next(circular_p)
+                Q = next(circular_q)
 
 
 

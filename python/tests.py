@@ -63,6 +63,7 @@ class LinkedlistsTest(unittest.TestCase):
         self.minus_p = [(-1, (1, 0, 0)), (-1, (0, 1, 0)), (-1, (0, 0, 1))] + self.zero
         self.q = [(1, (2, 0, 0)), (-2, (0, 1, 0)), (-1, (0, 0, 1))] + self.zero
         self.p_plus_q = [(1, (2, 0, 0)), (1, (1, 0, 0)), (-1, (0, 1, 0))] + self.zero
+        self.one = [(1, (0, 0, 0))] + self.zero
 
     def test_topological_sort(self):
         self.assertEqual(topological_sort(self.simple), [1, 2, 3, 4, 5])
