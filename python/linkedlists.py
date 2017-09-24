@@ -137,7 +137,7 @@ def polynomial_multiplication(p, m):
         Q = next(circular_q)
         result = []
         # same algorithm as for addition with a few changes
-                while abc(P) != special or abc(Q) != special:
+        while abc(P) != special or abc(Q) != special:
             if add_abc(P, M) == abc(Q):
                 # step A3/M2. No need to check that abc(P) > -1 as this is always true in this branch
                 c = coef(P)*coef(M) + coef(Q)
