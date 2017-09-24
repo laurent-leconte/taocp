@@ -113,7 +113,6 @@ def polynomial_multiplication(p, m):
     special = (0, 0, -1)
     result = []
     circular_p = itertools.cycle(p)
-    print("start ", p, m)
     def coef(X):
         return X[0]
 
@@ -142,25 +141,21 @@ def polynomial_multiplication(p, m):
                 # step A3/M2. No need to check that abc(P) > -1 as this is always true in this branch
                 c = coef(P)*coef(M) + coef(Q)
                 if c != 0:
-                    print("appending from A3 ", (c, abc(Q)))
                     result.append((c, abc(Q)))
                 P = next(circular_p)
                 Q = next(circular_q)
             if abc(P) > special:
                 while add_abc(P, M) < abc(Q):
                     # step A2. # The while condition is probably not enough to cover the M2 check
-                    print("appending from A2a ", Q)
                     result.append(Q)
                     Q = next(circular_q)
             else:
                 while abc(Q) > special:
-                    print("appending from A2b ", Q)
                     result.append(Q)
                     Q = next(circular_q)
             while abc(P) > special and add_abc(P, M) > abc(Q):
                 # step A5
                 X = (coef(P)*coef(M), add_abc(P, M))
-                print("appending from A5 ", X)
                 result.append(X)
                 P = next(circular_p)
 

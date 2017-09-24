@@ -2,6 +2,8 @@ import unittest
 from permutations import table_to_cycles, cycles_to_table
 from permutations import permutation_product_A, permutation_product_B, permutation_inverse_I
 from linkedlists import topological_sort, polynomial_addition, polynomial_multiplication
+from trees import BTree, in_order
+
 
 class PermutationTest(unittest.TestCase):
 
@@ -51,6 +53,7 @@ class PermutationTest(unittest.TestCase):
         self.assertEqual(permutation_inverse_I([]),[])
         self.assertEqual(permutation_inverse_I(self.perm1), self.inv_perm1)
         self.assertEqual(permutation_inverse_I(self.perm3), self.perm3)
+
 
 class LinkedlistsTest(unittest.TestCase):
     def setUp(self):
@@ -103,3 +106,15 @@ class LinkedlistsTest(unittest.TestCase):
         self.assertEqual(polynomial_multiplication(self.p, self.q), self.pq)
         self.assertEqual(polynomial_multiplication(self.q, self.p), self.pq)
         self.assertEqual(polynomial_multiplication(self.p, self.p), self.p2)
+
+class TreesTest(unittest.TestCase):
+    def setUp(self):
+        l = BTree("B", BTree("D"))
+        f = BTree("F", BTree("H"), BTree("J"))
+        r = BTree("C", BTree("E", None, BTree("G")), f)
+        self.tree = BTree("A", l, r)
+
+    def test_in_order(self):
+        self.assertEqual(in_order(None), [])
+        self.assertEqual(in_order(BTree("A", BTree("B"), BTree("C"))), ["B", "A", "C"])
+        self.assertEqual(in_order(self.tree), ['D', 'B', 'A', 'E', 'G', 'C', 'H', 'F', 'J'])
