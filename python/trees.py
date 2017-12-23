@@ -1,3 +1,7 @@
+"""Implementation of some of the tree / binary tree algorithms, with added helper methods to build trees from strings.
+
+"""
+
 import re
 
 
@@ -10,9 +14,11 @@ class MathError(Exception):
 class BTree(object):
     """Simple binary tree class.
 
-    Some shortcomings: *no check that children are actually binary tree.*
-    Needs a formal definition and management of empty trees.
-    Parsing from string has not been tested robustly. Clunky `rec_repr` function.
+    Some shortcomings:
+    * No check that children are actually binary tree.
+    * Needs a formal definition and management of empty trees.
+    * Parsing from string has not been tested robustly.
+    * Clunky `rec_repr` function.
 
     Do not use in real life!"""
 
@@ -250,6 +256,7 @@ def differentiate(t, x):
         return add(first, second)
 
 if __name__ == '__main__':
+    # TODO : turn into real unit tests
     l = BTree('OP|+', BTree('CONST|1'), BTree('VAR|x'))
     r = BTree('OP|-', BTree('VAR|x'), BTree('VAR|y'))
     t = BTree('OP|*', l, r)
